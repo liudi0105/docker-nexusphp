@@ -1,32 +1,30 @@
-version: '3.7'
-
 services:
   php:
     privileged: true
     build: ./php
-    volumes: 
-      - ./php/nexusphp:/var/www/html:rw
-    # entrypoint: ["composer", "install"]
+    # volumes: 
+    #   - ./php/html:/var/www/html:rw
+    # entrypoint: ["composer", "install", "-vvv"]
 
-  # nginx:
-  #   image: nginx
-  #   volumes:
-  #     - ./php/nexusphp.conf:/etc/nginx/conf.d/default.conf
-  #     - ./php/nexusphp:/var/www/html
-  #   ports:
-  #     - 8000:80
+  nginx:
+    image: nginx
+    volumes:
+      - ./php/nexusphp.conf:/etc/nginx/conf.d/default.conf
+      - ./php/nexusphp:/var/www/html
+    ports:
+      - 8000:80
 
-  # db:
-  #   image: mysql:5.7
-  #   volumes:
-  #     - ./dbdata:/var/lib/mysql
-  #     - ./php/dbstructure_v1.6.sql:/docker-entrypoint-initdb.d/dbstructure.sql
-  #   restart: always
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: nexusphp
-  #     MYSQL_DATABASE: nexus_php_php8
-  #     MYSQL_USER: nexusphp
-  #     MYSQL_PASSWORD: nexusphp
+  db:
+    image: mysql:5.7
+    volumes:
+      - ./dbdata:/var/lib/mysql
+      - ./php/dbstructure_v1.6.sql:/docker-entrypoint-initdb.d/dbstructure.sql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: nexusphp
+      MYSQL_DATABASE: nexus_php_php8
+      MYSQL_USER: nexusphp
+      MYSQL_PASSWORD: nexusphp
 
-  # redis:
-  #   image: redis
+  redis:
+    image: redis

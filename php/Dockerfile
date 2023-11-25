@@ -1,4 +1,4 @@
-FROM php:8.0-fpm
+FROM php:8.2-fpm
 
 COPY ./sources.list /etc/apt/sources.list
 RUN apt update && apt install -y zlib1g-dev libpng-dev libjpeg62-turbo-dev git unzip libgmp-dev
@@ -12,14 +12,17 @@ RUN docker-php-source extract \
   && docker-php-ext-enable redis opcache \
   && docker-php-source delete
 
+COPY ./nexusphp /var/www/html
+
 WORKDIR /var/www/html
 
-COPY ./composer-setup.php /var/www/html/composer-setup.php
+# COPY ./composer-setup.php /var/www/html/composer-setup.php
 RUN php composer-setup.php
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN mv composer.phar /usr/local/bin/composer &&\
   composer config -g repos.packagist composer https://mirrors.aliyun.com/composer/
+
 # RUN composer install
 
 # RUN cp -R nexus/Install/install public/
