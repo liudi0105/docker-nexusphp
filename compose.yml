@@ -1,37 +1,33 @@
 services:
-  # php:
-  #   privileged: true
-  #   build: ./php
-  #   # image: php:8.2-fpm
-  #   volumes:
-  #     - ./php/nexusphp-panda:/var/www/html:rw
-  #     - ./php/sources.list:/etc/apt/sources.list:ro
-  #     - ./php/docker-fpm.ini:/usr/local/etc/php/conf.d/docker-fpm.ini:ro
-  #     - ./php/composer-setup.php:/opt/composer-setup.php
-  #     - ./php/init.sh:/opt/init.sh
-  #   environment:
-  #     - COMPOSER_ALLOW_SUPERUSER=1
-  #   # entrypoint: [ "bash", "-C", "/opt/init.sh" ]
-
-  # nginx:
-  #   image: nginx
-  #   volumes:
-  #     - ./php/nexusphp.conf:/etc/nginx/conf.d/default.conf
-  #     - ./php/nexusphp-panda:/var/www/html
-  #   ports:
-  #     - 8000:80
-
-  db:
-    image: mysql:5.7
+  php:
+    privileged: true
+    build: ./php
     volumes:
-      - ./dbdata:/var/lib/mysql
-    restart: always
+      - ./php/nexusphp-panda:/var/www/html:rw
+      - ./php/init.sh:/opt/init.sh
+    entrypoint: [ "bash", "-C", "/opt/init.sh" ]
+
+  nginx:
+    image: nginx
+    volumes:
+      - ./php/nexusphp.conf:/etc/nginx/conf.d/default.conf
+      - ./php/nexusphp-panda:/var/www/html
     ports:
-      - 3306:3306
-    environment:
-      MYSQL_ROOT_PASSWORD: nexusphp
-      MYSQL_DATABASE: nexusphp
-      MYSQL_USER: nexusphp
-      MYSQL_PASSWORD: nexusphp
+      - 8000:80
+
+  # db:
+  #   image: mysql:5.7
+  #   volumes:
+  #     - ./dbdata:/var/lib/mysql
+  #     - ./php/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql
+  #   restart: always
+  #   ports:
+  #     - 3306:3306
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: nexusphp
+  #     # MYSQL_DATABASE: nexusphp
+  #     MYSQL_USER: nexusphp
+  #     MYSQL_PASSWORD: nexusphp
+
   # redis:
   #   image: redis
